@@ -1,6 +1,6 @@
 # 💫 About Me:
 Hello folks,
-I am Rishabh Singh, a passionate robotics enthusiast pursuing my Master of Science in Robotics at Northeastern University. With a strong skill set in programming, tools, and libraries, I have experience in designing telecom networks and developing wireless surveillance bots. My projects showcase my expertise in Autonomous systems, Computer Vision, Object detection & recognition, and sensor fusion. I am dedicated to pushing the boundaries of robotics and contributing to innovative advancements in the field.
+I am Rishabh Singh, a passionate robotics enthusiast pursuing my Master of Science in Robotics & AI at Northeastern University. With a strong skill set in programming, tools, and libraries, I have experience in designing telecom networks and developing wireless surveillance bots. My projects showcase my expertise in Autonomous systems, Computer Vision, Object detection & recognition, and sensor fusion. I am dedicated to pushing the boundaries of robotics and contributing to innovative advancements in the field.
 
 Introducing myself in a single sentence : "I am an Ordinary man with Extraordinary dreams".
 
