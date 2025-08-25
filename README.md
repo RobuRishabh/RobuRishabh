@@ -1,6 +1,10 @@
 # 💫 About Me:
 Hello folks,
-I am Rishabh Singh, a passionate robotics enthusiast pursuing my Master of Science in Robotics & AI at Northeastern University. With a strong skill set in programming, tools, and libraries, I have experience in designing telecom networks and developing wireless surveillance bots. My projects showcase my expertise in Autonomous systems, Computer Vision, Object detection & recognition, and sensor fusion. I am dedicated to pushing the boundaries of robotics and contributing to innovative advancements in the field.
+I'm Rishabh Singh, a software engineer at Red Hat. I’m a contributor to the open source community. I completed my Master of Science in Robotics/AI from Northeastern University, Boston, USA and Bachelor of Technology from Army Institute Of Technology (Pune University), India.
+
+My work focuses on pushing the boundaries of robotics and AI. I have a strong background in developing wireless surveillance bots, Machine Learning, Deep Learning, LLMs, Agentic AI. My projects highlight my skills in autonomous systems, computer vision, and sensor fusion, with a special focus on object detection and recognition.
+
+I'm passionate about building innovative solutions and sharing my work with the world through open source.
 
 Introducing myself in a single sentence : "I am an Ordinary man with Extraordinary dreams".
 
