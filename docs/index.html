@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infinite K8s Quiz · RobuRishabh</title>
+  <meta name="description" content="Infinite quiz on Kubernetes, operators, and Kubeflow Spark Operator." />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface-2: #243044;
+      --text: #e8edf4;
+      --muted: #8b9cb3;
+      --accent: #ee0000;
+      --accent-soft: rgba(238, 0, 0, 0.15);
+      --green: #3dd68c;
+      --green-soft: rgba(61, 214, 140, 0.12);
+      --red: #ff6b6b;
+      --red-soft: rgba(255, 107, 107, 0.12);
+      --blue: #4dabf7;
+      --radius: 14px;
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(238, 0, 0, 0.08), transparent 40%),
+        radial-gradient(circle at bottom right, rgba(77, 171, 247, 0.08), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 540px;
+      margin-inline: auto;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius);
+      padding: 0.85rem 0.5rem;
+      text-align: center;
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: calc(var(--radius) + 2px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface-2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .topic {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--blue);
+    }
+
+    .counter {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .question {
+      padding: 1.5rem 1.25rem 1rem;
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .options {
+      display: grid;
+      gap: 0.65rem;
+      padding: 0 1.25rem 1.25rem;
+    }
+
+    button.option {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 0.95rem 1rem;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+
+    button.option:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: rgba(238, 0, 0, 0.45);
+      background: var(--accent-soft);
+    }
+
+    button.option:disabled { cursor: default; opacity: 0.95; }
+    button.option.correct { border-color: var(--green); background: var(--green-soft); }
+    button.option.wrong { border-color: var(--red); background: var(--red-soft); }
+    button.option.reveal-correct { border-color: var(--green); box-shadow: inset 0 0 0 1px var(--green); }
+
+    .feedback {
+      display: none;
+      padding: 1rem 1.25rem 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .feedback.show { display: block; }
+
+    .feedback-title {
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .feedback-title.ok { color: var(--green); }
+    .feedback-title.bad { color: var(--red); }
+
+    .feedback p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 1.1rem;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer a { color: var(--blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 560px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>☸️ Infinite K8s Quiz</h1>
+      <p>Learn Kubernetes, operators, and the Kubeflow Spark Operator — one question at a time. No end. Just keep playing.</p>
+      <div class="badge-row">
+        <span class="badge">Kubernetes</span>
+        <span class="badge">Operators</span>
+        <span class="badge">Spark Operator</span>
+        <span class="badge">by RobuRishabh</span>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Score">
+      <div class="stat"><span class="stat-value" id="score">0</span><span class="stat-label">Correct</span></div>
+      <div class="stat"><span class="stat-value" id="answered">0</span><span class="stat-label">Answered</span></div>
+      <div class="stat"><span class="stat-value" id="streak">0</span><span class="stat-label">Streak</span></div>
+      <div class="stat"><span class="stat-value" id="accuracy">—</span><span class="stat-label">Accuracy</span></div>
+    </section>
+
+    <main class="card" id="quiz-card">
+      <div class="card-top">
+        <span class="topic" id="topic">Kubernetes</span>
+        <span class="counter" id="counter">Question 1</span>
+      </div>
+      <div class="question" id="question">Loading…</div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback">
+        <div class="feedback-title" id="feedback-title"></div>
+        <p id="feedback-text"></p>
+        <div class="actions">
+          <button class="btn btn-primary" id="next-btn" type="button">Next question →</button>
+          <button class="btn btn-secondary" id="reset-btn" type="button">Reset score</button>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      Built for learning · <a href="https://github.com/RobuRishabh/RobuRishabh">GitHub Profile</a>
+      · <a href="https://github.com/kubeflow/spark-operator">Kubeflow Spark Operator</a>
+    </footer>
+  </div>
+
+  <script>
+    const QUESTIONS = [
+      {
+        topic: "Kubernetes",
+        q: "What is the smallest deployable unit in Kubernetes?",
+        options: ["Node", "Pod", "Container", "Deployment"],
+        answer: 1,
+        explain: "A Pod wraps one or more containers that share storage and network. Kubernetes schedules and manages Pods, not bare containers."
+      },
+      {
+        topic: "Kubernetes",
+        q: "Which kubectl command lists Pods in every namespace?",
+        options: ["kubectl get pods", "kubectl get pods --all-namespaces", "kubectl list pods -A", "kubectl pods --global"],
+        answer: 1,
+        explain: "Use kubectl get pods --all-namespaces (or kubectl get pods -A) to list Pods cluster-wide."
+      },
+      {
+        topic: "Kubernetes",
+        q: "What is the main purpose of a Deployment?",
+        options: ["Store secrets", "Manage stateful storage", "Declare desired state for stateless apps", "Route external traffic"],
+        answer: 2,
+        explain: "Deployments manage ReplicaSets so you can roll out, roll back, and scale stateless applications declaratively."
+      },
+      {
+        topic: "Kubernetes",
+        q: "Which component stores cluster state and configuration data?",
+        options: ["kubelet", "etcd", "kube-proxy", "CoreDNS"],
+        answer: 1,
+        explain: "etcd is the consistent, distributed key-value store that holds Kubernetes cluster data."
+      },
+      {
+        topic: "Kubernetes",
+        q: "What does a Service provide for Pods?",
+        options: ["Persistent disk", "Stable network endpoint", "Container image", "RBAC policy"],
+        answer: 1,
+        explain: "Services give Pods a stable DNS name and IP (ClusterIP, NodePort, LoadBalancer, etc.) even as Pod IPs change."
+      },
+      {
+        topic: "Kubernetes",
+        q: "What is RBAC used for?",
+        options: ["Pod autoscaling", "Encrypting Secrets", "Controlling who can do what in the API", "Scheduling batch jobs"],
+        answer: 2,
+        explain: "Role-Based Access Control binds users, groups, or service accounts to Roles/ClusterRoles via RoleBindings."
+      },
+      {
+        topic: "Kubernetes",
+        q: "A readiness probe failing means…",
+        options: ["The Pod is deleted immediately", "The Pod should not receive traffic yet", "The node is cordoned", "The Deployment is rolled back"],
+        answer: 1,
+        explain: "Readiness gates Service endpoints. A failing readiness probe removes the Pod from load balancing until it passes."
+      },
+      {
+        topic: "Kubernetes",
+        q: "What is a ConfigMap best suited for?",
+        options: ["Binary TLS keys", "Non-sensitive configuration", "Persistent volumes", "Pod scheduling rules"],
+        answer: 1,
+        explain: "ConfigMaps hold configuration data (files, env values). Use Secrets for sensitive material."
+      },
+      {
+        topic: "Kubernetes",
+        q: "Which workload is ideal for one Pod per node (e.g. logging agents)?",
+        options: ["Deployment", "Job", "DaemonSet", "CronJob"],
+        answer: 2,
+        explain: "DaemonSets ensure a copy of a Pod runs on (or on a subset of) every node."
+      },
+      {
+        topic: "Kubernetes",
+        q: "What does a PersistentVolumeClaim (PVC) request?",
+        options: ["CPU and memory", "Block or file storage", "Ingress hostname", "Custom API type"],
+        answer: 1,
+        explain: "A PVC asks the cluster for storage. It binds to a PersistentVolume provisioned statically or dynamically."
+      },
+      {
+        topic: "Kubernetes",
+        q: "Which object gives Pods stable network identity and ordered rollout?",
+        options: ["Deployment", "StatefulSet", "ReplicaSet", "HorizontalPodAutoscaler"],
+        answer: 1,
+        explain: "StatefulSets provide stable Pod names, ordered scaling, and often paired PVCs per replica."
+      },
+      {
+        topic: "Kubernetes",
+        q: "What is a Namespace primarily used for?",
+        options: ["Virtual clusters for isolation and organization", "Encrypting etcd", "Replacing RBAC", "Running Spark drivers only"],
+        answer: 0,
+        explain: "Namespaces scope names and resources. They help teams and environments share one cluster safely."
+      },
+      {
+        topic: "Operators",
+        q: "What is a Kubernetes operator?",
+        options: ["A kubectl plugin", "A controller that encodes operational knowledge for an app", "A type of Ingress", "A Spark executor"],
+        answer: 1,
+        explain: "Operators extend Kubernetes by watching custom resources and reconciling real-world state toward desired state."
+      },
+      {
+        topic: "Operators",
+        q: "What does CRD stand for?",
+        options: ["Cluster Resource Daemon", "Custom Resource Definition", "Container Runtime Driver", "Controller Reconcile Directive"],
+        answer: 1,
+        explain: "CRDs extend the Kubernetes API so you can create and manage custom resource types."
+      },
+      {
+        topic: "Operators",
+        q: "In the reconciliation loop, the operator compares…",
+        options: ["Two etcd backups", "Desired state vs actual state", "Pod logs vs events", "Helm charts vs Dockerfiles"],
+        answer: 1,
+        explain: "Controllers repeatedly reconcile: read spec, inspect cluster, act, requeue until desired state is met."
+      },
+      {
+        topic: "Operators",
+        q: "controller-runtime is commonly used to…",
+        options: ["Build container images", "Write Kubernetes controllers in Go", "Run Spark SQL", "Replace kubelet"],
+        answer: 1,
+        explain: "controller-runtime provides building blocks (manager, client, watches) for operator controllers."
+      },
+      {
+        topic: "Operators",
+        q: "Finalizers on a resource prevent deletion until…",
+        options: ["The node reboots", "Cleanup logic completes", "A new Pod starts", "RBAC is disabled"],
+        answer: 1,
+        explain: "Finalizers block removal from etcd until controllers finish external cleanup and remove the finalizer."
+      },
+      {
+        topic: "Operators",
+        q: "Owner references help Kubernetes…",
+        options: ["Garbage-collect dependent objects", "Schedule GPU nodes", "Sign container images", "Store Spark shuffle data"],
+        answer: 0,
+        explain: "Child objects with ownerReferences are often deleted automatically when the parent is removed."
+      },
+      {
+        topic: "Operators",
+        q: "A validating admission webhook can…",
+        options: ["Only read Pod logs", "Reject or mutate API requests before persistence", "Replace etcd", "Run Spark executors"],
+        answer: 1,
+        explain: "Admission webhooks enforce policy at create/update time — validating webhooks accept or deny requests."
+      },
+      {
+        topic: "Operators",
+        q: "Level-triggered reconciliation means the controller reacts to…",
+        options: ["Only the latest desired state, not every edge event", "Every packet on the network", "Helm release numbers only", "Manual kubectl edits only"],
+        answer: 0,
+        explain: "Level-triggered controllers care about current state vs spec, making them resilient to missed events."
+      },
+      {
+        topic: "Operators",
+        q: "What is the Operator Lifecycle Manager (OLM) used for?",
+        options: ["Managing operator installation and upgrades on cluster", "Compiling Go operators", "Running kubectl proxy", "Building Spark JARs"],
+        answer: 0,
+        explain: "OLM helps package, install, upgrade, and manage operators (common on OpenShift)."
+      },
+      {
+        topic: "Spark Operator",
+        q: "The Kubeflow Spark Operator primarily manages which custom resource?",
+        options: ["SparkCluster", "SparkApplication", "BatchJob", "DataPipeline"],
+        answer: 1,
+        explain: "SparkApplication (and ScheduledSparkApplication) declares Spark jobs to run on Kubernetes."
+      },
+      {
+        topic: "Spark Operator",
+        q: "In Spark on Kubernetes, the driver Pod…",
+        options: ["Only stores logs", "Runs the SparkContext and orchestrates executors", "Is optional for batch jobs", "Replaces the kube-apiserver"],
+        answer: 1,
+        explain: "The driver hosts the Spark driver program, schedules tasks, and talks to executors."
+      },
+      {
+        topic: "Spark Operator",
+        q: "Executor Pods in Spark are responsible for…",
+        options: ["Running task computations and storing shuffle data", "Hosting the Kubernetes API", "Managing CRD schemas", "Replacing HDFS NameNode"],
+        answer: 0,
+        explain: "Executors run tasks and cache partitions. The driver coordinates them."
+      },
+      {
+        topic: "Spark Operator",
+        q: "When you submit a SparkApplication, the Spark Operator typically…",
+        options: ["Deletes the namespace", "Creates driver/executor Pods according to the spec", "Only updates ConfigMaps", "Runs spark-submit on your laptop"],
+        answer: 1,
+        explain: "The operator watches SparkApplication objects and materializes the driver and executor Pods."
+      },
+      {
+        topic: "Spark Operator",
+        q: "Dynamic allocation in Spark allows…",
+        options: ["Executors to scale up/down based on workload", "Pods to run without RBAC", "Automatic CRD creation", "Replacing batch scheduling"],
+        answer: 0,
+        explain: "With dynamic allocation, Spark can request or release executors as stages need more or fewer resources."
+      },
+      {
+        topic: "Spark Operator",
+        q: "Why is batch scheduling (e.g. Volcano, YuniKorn) often used with Spark on K8s?",
+        options: ["To gzip Pod logs", "To queue and fairly schedule many concurrent Spark jobs", "To disable namespaces", "To compile Scala faster"],
+        answer: 1,
+        explain: "Batch schedulers improve gang scheduling and fair sharing when many SparkApplications compete for cluster capacity."
+      },
+      {
+        topic: "Spark Operator",
+        q: "SparkApplication spec fields commonly include…",
+        options: ["mainApplicationFile and driver/executor config", "etcd backup interval", "Ingress TLS cipher only", "ClusterRole for every user"],
+        answer: 0,
+        explain: "You declare the main jar/py file, Spark version, resources, and driver/executor Pod templates in the CR."
+      },
+      {
+        topic: "Spark Operator",
+        q: "If a Spark driver Pod crashes, the operator may…",
+        options: ["Ignore it forever", "Reconcile and recreate resources per restart policy / spec", "Delete the whole cluster", "Disable RBAC cluster-wide"],
+        answer: 1,
+        explain: "Depending on configuration and failure mode, the operator reconciles toward the declared desired state."
+      },
+      {
+        topic: "Spark Operator",
+        q: "Running Spark jobs in a dedicated namespace helps with…",
+        options: ["RBAC isolation and resource quotas", "Disabling network policies", "Removing the need for Services", "Avoiding Pod specs"],
+        answer: 0,
+        explain: "Team or workload namespaces plus quotas and RBAC keep multi-tenant Spark clusters safer and predictable."
+      },
+      {
+        topic: "Kubernetes",
+        q: "What does kube-proxy implement on each node?",
+        options: ["Pod network rules for Services", "Container runtime", "etcd replication", "Spark shuffle service"],
+        answer: 0,
+        explain: "kube-proxy maintains network rules so Service traffic reaches backend Pods."
+      },
+      {
+        topic: "Operators",
+        q: "A mutating admission webhook can…",
+        options: ["Change objects before they are stored", "Only list nodes", "Run Spark driver code", "Delete etcd keys manually"],
+        answer: 0,
+        explain: "Mutating webhooks can inject sidecars, defaults, or labels before the object is persisted."
+      },
+      {
+        topic: "Spark Operator",
+        q: "ScheduledSparkApplication is used for…",
+        options: ["Cron-like recurring Spark jobs", "One-time manual kubectl edits", "Replacing Deployments", "Node maintenance windows only"],
+        answer: 0,
+        explain: "ScheduledSparkApplication wraps a schedule (cron) around a SparkApplication template."
+      },
+      {
+        topic: "Kubernetes",
+        q: "Which probe restarts a container if it fails?",
+        options: ["Readiness probe", "Liveness probe", "Startup probe only on Services", "Ingress probe"],
+        answer: 1,
+        explain: "Liveness probes tell kubelet to restart a container that is alive but stuck or deadlocked."
+      },
+      {
+        topic: "Spark Operator",
+        q: "Service accounts in Spark on K8s are important because…",
+        options: ["Pods need identity for API access and cloud IAM bindings", "They replace Spark executors", "They store shuffle data", "They compile Python UDFs"],
+        answer: 0,
+        explain: "Driver and executor Pods often use service accounts for K8s API access and cloud credential federation."
+      }
+    ];
+
+    const state = {
+      score: 0,
+      answered: 0,
+      streak: 0,
+      questionNumber: 0,
+      current: null,
+      recentIds: [],
+      answeredCurrent: false
+    };
+
+    const els = {
+      topic: document.getElementById("topic"),
+      counter: document.getElementById("counter"),
+      question: document.getElementById("question"),
+      options: document.getElementById("options"),
+      feedback: document.getElementById("feedback"),
+      feedbackTitle: document.getElementById("feedback-title"),
+      feedbackText: document.getElementById("feedback-text"),
+      nextBtn: document.getElementById("next-btn"),
+      resetBtn: document.getElementById("reset-btn"),
+      score: document.getElementById("score"),
+      answered: document.getElementById("answered"),
+      streak: document.getElementById("streak"),
+      accuracy: document.getElementById("accuracy")
+    };
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickQuestion() {
+      const pool = QUESTIONS.map((_, i) => i).filter(i => !state.recentIds.includes(i));
+      const candidates = pool.length ? pool : QUESTIONS.map((_, i) => i);
+      if (pool.length === 0) state.recentIds = [];
+
+      const id = candidates[Math.floor(Math.random() * candidates.length)];
+      state.recentIds.push(id);
+      if (state.recentIds.length > Math.min(8, QUESTIONS.length - 1)) {
+        state.recentIds.shift();
+      }
+      return { id, ...QUESTIONS[id] };
+    }
+
+    function updateStats() {
+      els.score.textContent = state.score;
+      els.answered.textContent = state.answered;
+      els.streak.textContent = state.streak;
+      els.accuracy.textContent = state.answered
+        ? Math.round((state.score / state.answered) * 100) + "%"
+        : "—";
+    }
+
+    function renderQuestion() {
+      state.current = pickQuestion();
+      state.answeredCurrent = false;
+      state.questionNumber += 1;
+
+      els.topic.textContent = state.current.topic;
+      els.counter.textContent = "Question " + state.questionNumber;
+      els.question.textContent = state.current.q;
+      els.feedback.classList.remove("show");
+      els.options.innerHTML = "";
+
+      state.current.options.forEach((label, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option";
+        btn.textContent = label;
+        btn.addEventListener("click", () => choose(index, btn));
+        els.options.appendChild(btn);
+      });
+    }
+
+    function choose(index, btn) {
+      if (state.answeredCurrent) return;
+      state.answeredCurrent = true;
+      state.answered += 1;
+
+      const correct = index === state.current.answer;
+      const buttons = [...els.options.querySelectorAll(".option")];
+
+      buttons.forEach(b => b.disabled = true);
+
+      if (correct) {
+        state.score += 1;
+        state.streak += 1;
+        btn.classList.add("correct");
+        els.feedbackTitle.textContent = "Correct!";
+        els.feedbackTitle.className = "feedback-title ok";
+      } else {
+        state.streak = 0;
+        btn.classList.add("wrong");
+        buttons[state.current.answer].classList.add("reveal-correct");
+        els.feedbackTitle.textContent = "Not quite.";
+        els.feedbackTitle.className = "feedback-title bad";
+      }
+
+      els.feedbackText.textContent = state.current.explain;
+      els.feedback.classList.add("show");
+      updateStats();
+    }
+
+    function resetScore() {
+      state.score = 0;
+      state.answered = 0;
+      state.streak = 0;
+      state.questionNumber = 0;
+      state.recentIds = [];
+      updateStats();
+      renderQuestion();
+    }
+
+    els.nextBtn.addEventListener("click", renderQuestion);
+    els.resetBtn.addEventListener("click", resetScore);
+
+    updateStats();
+    renderQuestion();
+  </script>
+</body>
+</html>
