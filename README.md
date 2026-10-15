@@ -35,7 +35,7 @@ At Red Hat AI, I extended that work into OpenShift AI and Open Data Hub by movin
 
 ## Kubeflow SDK and community
 
-I help shape SparkClient's production API through design review and community work. I am also a **CNCF LFX mentor** for [Evolving SparkClient into Kubeflow's Unified Data Processing Layer](https://www.kubeflow.org/events/upcoming-events/lfx-2026-term-3/)—extending the path from raw data to trained models with observability, scheduled and streaming execution, and Spark-to-Trainer workflows.
+I help shape SparkClient's production API through design review and community work. I am also a **CNCF LFX mentor** for [Evolving SparkClient into Kubeflow's Unified Data Processing Layer](https://github.com/cncf/mentoring/issues/1975)—extending the path from raw data to trained models with observability, scheduled and streaming execution, and Spark-to-Trainer workflows.
 
 ## Selected technical work
 
@@ -57,7 +57,7 @@ I help shape SparkClient's production API through design review and community wo
 
 - Co-authored **[5 anti-patterns that cause Kubernetes operator vulnerabilities](https://developers.redhat.com/articles/2026/07/06/5-anti-patterns-cause-kubernetes-operator-vulnerabilities)** and **[Protect your Kubernetes Operator from OOMKill](https://developers.redhat.com/articles/2026/06/01/protect-your-kubernetes-operator-oomkill)** for Red Hat Developer, turning upstream cache hardening and broader controller audits into practical production guidance.
 - Write about [distributed Docling + Spark](https://medium.com/@RobuRishabh/distributed-document-structuring-with-docling-and-spark-2337b16d23cd), ML, computer vision, and system design on [Medium](https://medium.com/@RobuRishabh).
-- Mentor contributors through [CNCF LFX and the Kubeflow community](https://github.com/cncf/mentoring/issues/1975); find my [speaker profile](https://sessionize.com/roburishabh/) and [technical videos](https://www.youtube.com/@RobuRishabh) online.
+- Mentor contributors through [CNCF LFX and the Kubeflow community](https://mentorship.lfx.linuxfoundation.org/project/01d5da81-e5d6-4693-920c-e0e6f4fbc9a8); find my [speaker profile](https://sessionize.com/roburishabh/) and [technical videos](https://www.youtube.com/@RobuRishabh) online.
 
 ## Let's connect
 
