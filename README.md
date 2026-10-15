@@ -37,13 +37,6 @@ At Red Hat AI, I extended that work into OpenShift AI and Open Data Hub by movin
 
 I help shape SparkClient's production API through design review and community work. I am also a **CNCF LFX mentor** for [Evolving SparkClient into Kubeflow's Unified Data Processing Layer](https://github.com/cncf/mentoring/issues/1975)—extending the path from raw data to trained models with observability, scheduled and streaming execution, and Spark-to-Trainer workflows.
 
-## Selected technical work
-
-- **[Docling + Spark on OpenShift](https://github.com/RobuRishabh/Docling-Spark-Distributed-Structuring)** — a reference implementation that parallelizes PDF understanding with PySpark executors and runs the workload through the Kubeflow Spark Operator on OpenShift. [Read the walkthrough →](https://medium.com/@RobuRishabh/distributed-document-structuring-with-docling-and-spark-2337b16d23cd)
-- **[LiDAR 3D object detection](https://github.com/RobuRishabh/LiDAR-point-cloud-based-3D-object-detection)** — Velodyne VLP-16 point-cloud processing with voxel downsampling, RANSAC segmentation, DBSCAN clustering, and 3D bounding boxes for pedestrians, cyclists, and vehicles.
-- **[GPS + IMU sensor-fusion navigation](https://github.com/RobuRishabh/Navigation-stack-using-two-different-sensors-Sensor-Fusion-of-GPS-and-IMU)** — sensor drivers, magnetometer calibration, complementary filtering, forward-velocity estimation, and dead reckoning.
-- **Robotics and computer vision foundation** — [autonomous disaster-response mapping](https://github.com/RobuRishabh/Autonomous-Disaster-Response-System), [real-time 2D object recognition](https://github.com/RobuRishabh/Real_time_2D_Object_Recognition), and [lane perception for autonomous vehicles](https://github.com/RobuRishabh/Lane_detector_Using_OpenCV_for_autonomous_vehicle).
-
 ## Focused stack
 
 **Programming:** Go, Python, C++, JavaScript, SQL, MATLAB<br>
